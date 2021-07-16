@@ -32,7 +32,7 @@ def collate_batch(batch):
 def train(dataloader):
     model.train()
     total_acc, total_count = 0, 0
-    log_interval = 500
+    log_interval = 10
     start_time = time.time()
 
     for idx, (label, text, offsets) in enumerate(dataloader):
@@ -106,7 +106,7 @@ if __name__ == '__main__':
 
     # Hyperparameters
     EPOCHS = 100  # epoch
-    LR = 5  # learning rate
+    LR = 0.1  # learning rate
     BATCH_SIZE = 64  # batch size for training
 
     # criterion = torch.nn.CrossEntropyLoss()

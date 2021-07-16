@@ -90,12 +90,14 @@ class MTCNNLSTM(nn.Module):
         self.fusion_net = FusionNet()
 
         self.fc = nn.Sequential(
+            nn.Dropout(0.25),
             nn.Linear(512, 256),
-            nn.LeakyReLU(),
+            nn.ReLU(),
+            nn.Dropout(0.25),
             nn.Linear(256, 128),
-            nn.LeakyReLU(),
+            nn.ReLU(),
+            nn.Dropout(0.25),
             nn.Linear(128, 2),
-            nn.Softmax(dim=1)
         )
 
     def forward(self, text, offset):
