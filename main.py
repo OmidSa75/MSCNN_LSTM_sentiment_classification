@@ -105,7 +105,7 @@ if __name__ == '__main__':
     model = MTCNNLSTM(vocab_size, emsize).to(device)
 
     # Hyperparameters
-    EPOCHS = 10  # epoch
+    EPOCHS = 100  # epoch
     LR = 5  # learning rate
     BATCH_SIZE = 64  # batch size for training
 
