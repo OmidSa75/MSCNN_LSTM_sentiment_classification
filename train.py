@@ -32,7 +32,7 @@ class TrainVal:
             predited_label, private_features, shared_features = self.model(text, offsets)
             loss = self.criterion(predited_label, label, shared_features, private_features)
             loss.backward()
-            self.torch.nn.utils.clip_grad_norm_(self.model.parameters(), 0.1)
+            torch.nn.utils.clip_grad_norm_(self.model.parameters(), 0.1)
             self.optimizer.step()
             total_acc += (predited_label.argmax(1) == label).sum().item()
             total_count += label.size(0)
