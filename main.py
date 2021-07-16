@@ -14,6 +14,7 @@ import time
 from model import  MTCNNLSTM
 from utils import preprocess_text
 from loss import Loss
+from train import TrainVal
 
 
 def collate_batch(batch):
@@ -27,44 +28,6 @@ def collate_batch(batch):
     offsets = torch.tensor(offsets[:-1]).cumsum(dim=0)
     text_list = torch.cat(text_list)
     return label_list.to(device), text_list.to(device), offsets.to(device)
-
-
-def train(dataloader):
-    model.train()
-    total_acc, total_count = 0, 0
-    log_interval = 10
-    start_time = time.time()
-
-    for idx, (label, text, offsets) in enumerate(dataloader):
-        optimizer.zero_grad()
-        predited_label, private_features, shared_features = model(text, offsets)
-        loss = criterion(predited_label, label, shared_features, private_features)
-        loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), 0.1)
-        optimizer.step()
-        total_acc += (predited_label.argmax(1) == label).sum().item()
-        total_count += label.size(0)
-        if idx % log_interval == 0 and idx > 0:
-            elapsed = time.time() - start_time
-            print('| epoch {:3d} | {:5d}/{:5d} batches '
-                  '| accuracy {:8.3f} | loss {:.5f}'.format(epoch, idx, len(dataloader),
-                                              total_acc / total_count, loss.data))
-            total_acc, total_count = 0, 0
-            start_time = time.time()
-
-
-@torch.no_grad()
-def evaluate(dataloader):
-    model.eval()
-    total_acc, total_count = 0, 0
-
-    with torch.no_grad():
-        for idx, (label, text, offsets) in enumerate(dataloader):
-            predited_label, _, _ = model(text, offsets)
-            # loss = criterion(predited_label, label)
-            total_acc += (predited_label.argmax(1) == label).sum().item()
-            total_count += label.size(0)
-    return total_acc / total_count
 
 
 if __name__ == '__main__':
@@ -124,17 +87,5 @@ if __name__ == '__main__':
     valid_dataloader = DataLoader(split_valid_, batch_size=BATCH_SIZE,
                                   shuffle=True, collate_fn=collate_batch)
 
-    for epoch in range(1, EPOCHS + 1):
-        epoch_start_time = time.time()
-        train(train_dataloader)
-        accu_val = evaluate(valid_dataloader)
-        if total_accu is not None and total_accu > accu_val:
-            scheduler.step()
-        else:
-            total_accu = accu_val
-        print('-' * 59)
-        print('| end of epoch {:3d} | time: {:5.2f}s | '
-              'valid accuracy {:8.3f} '.format(epoch,
-                                               time.time() - epoch_start_time,
-                                               accu_val))
-        print('-' * 59)
+    training = TrainVal(model, train_dataloader, valid_dataloader, criterion, optimizer)
+    training.start_training()
