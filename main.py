@@ -47,8 +47,8 @@ def train(dataloader):
         if idx % log_interval == 0 and idx > 0:
             elapsed = time.time() - start_time
             print('| epoch {:3d} | {:5d}/{:5d} batches '
-                  '| accuracy {:8.3f}'.format(epoch, idx, len(dataloader),
-                                              total_acc / total_count))
+                  '| accuracy {:8.3f} | loss {:.5f}'.format(epoch, idx, len(dataloader),
+                                              total_acc / total_count, loss.data))
             total_acc, total_count = 0, 0
             start_time = time.time()
 
@@ -111,7 +111,7 @@ if __name__ == '__main__':
 
     # criterion = torch.nn.CrossEntropyLoss()
     criterion = Loss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=LR)
+    optimizer = torch.optim.Adam(model.parameters(), lr=LR)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 1.0, gamma=0.1)
     total_accu = None
     train_dataset = to_map_style_dataset(train_iter)
