@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
+from loss import Loss
 
 RED = "\033[1;31m"
 BLUE = "\033[1;34m"
@@ -12,12 +13,12 @@ REVERSE = "\033[;7m"
 
 
 class TrainVal:
-    def __init__(self, model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLoader, criterion, optimizer):
+    def __init__(self, model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLoader, criterion):
         self.model = model
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
         self.criterion = criterion
-        self.optimizer = optimizer
+        self.optimizer = torch.optim.SGD(self.model.parameters(), lr=0.1)
         self.scheduler = scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, 1.0, gamma=0.1)
 
         self.total_acc = None

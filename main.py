@@ -73,10 +73,6 @@ if __name__ == '__main__':
     BATCH_SIZE = 64  # batch size for training
 
     # criterion = torch.nn.CrossEntropyLoss()
-    criterion = Loss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=LR)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 1.0, gamma=0.1)
-    total_accu = None
     train_dataset = to_map_style_dataset(train_iter)
     num_train = int(len(train_dataset) * 0.95)
     split_train_, split_valid_ = \
@@ -87,5 +83,5 @@ if __name__ == '__main__':
     valid_dataloader = DataLoader(split_valid_, batch_size=BATCH_SIZE,
                                   shuffle=True, collate_fn=collate_batch)
 
-    training = TrainVal(model, train_dataloader, valid_dataloader, criterion, optimizer)
+    training = TrainVal(model, train_dataloader, valid_dataloader)
     training.start_training()
