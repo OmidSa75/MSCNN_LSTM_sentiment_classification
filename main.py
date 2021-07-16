@@ -60,7 +60,7 @@ def evaluate(dataloader):
 
     with torch.no_grad():
         for idx, (label, text, offsets) in enumerate(dataloader):
-            predited_label = model(text, offsets)
+            predited_label, _, _ = model(text, offsets)
             # loss = criterion(predited_label, label)
             total_acc += (predited_label.argmax(1) == label).sum().item()
             total_count += label.size(0)
