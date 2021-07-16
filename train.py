@@ -42,7 +42,7 @@ class TrainVal:
               RESET)
 
     @torch.no_grad()
-    def evaluate(self, dataloader):
+    def evaluate(self):
         self.model.eval()
         total_acc, total_count = 0.0, 0
         total_loss = 0.0
