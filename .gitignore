@@ -1,0 +1,9 @@
+.idea
+.data
+__pycache__
+.ipynb_checkpoints
+*.review
+*.tar.gz
+*.ipynb
+*.zip
+unprocessed
