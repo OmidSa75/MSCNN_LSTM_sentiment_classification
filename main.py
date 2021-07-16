@@ -74,7 +74,7 @@ if __name__ == '__main__':
 
     # criterion = torch.nn.CrossEntropyLoss()
     criterion = Loss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=LR)
+    optimizer = torch.optim.SGD(model.parameters(), lr=LR)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 1.0, gamma=0.1)
     total_accu = None
     train_dataset = to_map_style_dataset(train_iter)
