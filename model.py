@@ -8,7 +8,7 @@ class FusionNet(nn.Module):
         super(FusionNet, self).__init__()
         self.flatten = nn.Flatten()
         self.dropout = nn.Dropout()
-        self.fc = nn.Linear(512 * 759, 256)
+        self.fc = nn.Linear(512 * 379, 128)
         self.tanh = nn.Tanh()
 
     def init_weights(self):
@@ -40,6 +40,7 @@ class LocalEncoder(nn.Module):
         self.cnn3.bias.data.zero_()
         self.cnn4.bias.data.zero_()
         self.cnn5.bias.data.zero_()
+        self.max_pool = nn.MaxPool1d(2, 2)
 
     def forward(self, vectors: torch.Tensor):
         """
@@ -48,9 +49,9 @@ class LocalEncoder(nn.Module):
         :return:
         """
         vectors = vectors.unsqueeze(1)
-        x3 = F.relu(self.cnn3(vectors))
-        x4 = F.relu(self.cnn4(vectors))
-        x5 = F.relu(self.cnn5(vectors))
+        x3 = self.max_pool(F.relu(self.cnn3(vectors)))
+        x4 = self.max_pool(F.relu(self.cnn4(vectors)))
+        x5 = self.max_pool(F.relu(self.cnn5(vectors)))
         x = torch.cat((x3, x4, x5), dim=2)
 
         return x
@@ -60,11 +61,12 @@ class GlobalEncoder(nn.Module):
     def __init__(self):
         super(GlobalEncoder, self).__init__()
         self.lstm = nn.LSTM(256, hidden_size=256, num_layers=2, batch_first=True)
+        self.max_pool = nn.MaxPool1d(2, 2)
 
     def forward(self, x):
         x = x.unsqueeze(1)
         lstm_out, _ = self.lstm(x)
-        return lstm_out
+        return self.max_pool(lstm_out)
 
 
 class WordEmbed(nn.Module):
@@ -91,7 +93,7 @@ class MTCNNLSTM(nn.Module):
 
         self.fc = nn.Sequential(
             nn.Dropout(0.25),
-            nn.Linear(512, 256),
+            nn.Linear(256, 256),
             nn.ReLU(),
             nn.Dropout(0.25),
             nn.Linear(256, 128),

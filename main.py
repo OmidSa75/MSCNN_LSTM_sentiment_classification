@@ -31,9 +31,9 @@ def collate_batch(batch):
 
 
 if __name__ == '__main__':
-    with open('data/apparel/positive.review', encoding='utf8', errors='ignore') as f:
+    with open('data/sports/positive.review', encoding='utf8', errors='ignore') as f:
         df_pos = pd.read_xml(f)
-    with open('data/apparel/negative.review', encoding='utf8', errors='ignore') as f:
+    with open('data/sports/negative.review', encoding='utf8', errors='ignore') as f:
         df_neg = pd.read_xml(f)
 
     df_pos['label'] = 0
@@ -43,7 +43,10 @@ if __name__ == '__main__':
     y = df_pos['label'].tolist() + df_neg['label'].tolist()
     x_clean = []
     for sentence in tqdm(x):
-        x_clean.append(preprocess_text(sentence))
+        try:
+            x_clean.append(preprocess_text(sentence))
+        except:
+            print(sentence)
     train_iter = list(zip(x_clean, y))
 
     tokenizer = get_tokenizer('basic_english')
