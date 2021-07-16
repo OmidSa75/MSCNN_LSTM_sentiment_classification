@@ -13,12 +13,12 @@ REVERSE = "\033[;7m"
 
 
 class TrainVal:
-    def __init__(self, model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLoader, criterion):
+    def __init__(self, model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLoader):
         self.model = model
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
-        self.criterion = criterion
-        self.optimizer = torch.optim.SGD(self.model.parameters(), lr=0.1)
+        self.criterion = Loss()
+        self.optimizer = torch.optim.SGD(self.model.parameters(), lr=5)
         self.scheduler = scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, 1.0, gamma=0.1)
 
         self.total_acc = None

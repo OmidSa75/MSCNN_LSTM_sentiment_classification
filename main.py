@@ -69,7 +69,6 @@ if __name__ == '__main__':
 
     # Hyperparameters
     EPOCHS = 100  # epoch
-    LR = 0.1  # learning rate
     BATCH_SIZE = 64  # batch size for training
 
     # criterion = torch.nn.CrossEntropyLoss()
