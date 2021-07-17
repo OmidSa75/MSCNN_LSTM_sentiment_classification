@@ -6,7 +6,7 @@ class Loss(nn.Module):
     def __init__(self):
         super(Loss, self).__init__()
         self.cross_entropy = nn.CrossEntropyLoss()
-        self.gamma = 0.001
+        self.gamma = 0.0001
 
     def forward(self, predict, label, shared_features: torch.Tensor, private_features: torch.Tensor):
         cls_loss = self.cross_entropy(predict, label)

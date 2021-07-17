@@ -40,7 +40,6 @@ class LocalEncoder(nn.Module):
         self.cnn3.bias.data.zero_()
         self.cnn4.bias.data.zero_()
         self.cnn5.bias.data.zero_()
-        self.max_pool = nn.MaxPool1d(2, 2)
 
     def forward(self, vectors: torch.Tensor):
         """
@@ -49,9 +48,9 @@ class LocalEncoder(nn.Module):
         :return:
         """
         vectors = vectors.unsqueeze(1)
-        x3 = self.max_pool(F.relu(self.cnn3(vectors)))
-        x4 = self.max_pool(F.relu(self.cnn4(vectors)))
-        x5 = self.max_pool(F.relu(self.cnn5(vectors)))
+        x3 = self.pooling(F.relu(self.cnn3(vectors)))
+        x4 = self.pooling(F.relu(self.cnn4(vectors)))
+        x5 = self.pooling(F.relu(self.cnn5(vectors)))
         x = torch.cat((x3, x4, x5), dim=2)
 
         return x
